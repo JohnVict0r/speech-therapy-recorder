@@ -283,7 +283,10 @@ function App() {
                           Ao clicar em gravar você deverá repetir o protocolo
                           escolhido durante 30 segundos. <br /> Sugerimos que
                           realize uma pausa para recuperar o fôlego entre as
-                          gravações dos protocolos
+                          gravações dos protocolos.
+                          <br /> Sugerimos também que utilize um microfone
+                          externo (fone de ouvido) para realizar uma gravação
+                          melhor do áudio.
                         </Paragraph>{" "}
                       </>
                     }
