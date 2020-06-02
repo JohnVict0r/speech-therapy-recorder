@@ -1,7 +1,3 @@
-<h1 align="center">
-    <img alt="RevELA" title="#RevELA" src=".github/logo-revela.png" width="250px" />
-</h1>
-
 <h4 align="center"> 
 	:heavy_check_mark: Coleta de dados do meu TCC :heavy_check_mark:
 </h4>
@@ -36,7 +32,6 @@
 Speech therapy recorder is a project that aims to develop a tool to record the protocols used in patient care.
 
 <h1 align="center">
-    <img alt="first-step-Page" title="first-step-Page" src=".github/preview-app.png" width="500px" />
     <img alt="second-step-Page" title="second-step-Page" src=".github/recorder.png" width="500px" />
 </h1>
 
