@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
+import React, { useEffect, useState } from 'react';
+import './App.css';
 
 import {
   Layout,
-  Menu,
   Breadcrumb,
   Typography,
   Form,
-  Input,
   Button,
   Select,
   Radio,
@@ -16,16 +14,14 @@ import {
   Row,
   Col,
   Divider,
-  Tooltip,
   Progress,
   Alert,
-} from "antd";
+} from 'antd';
 
-import {
-  AudioOutlined,
-  LoadingOutlined,
-  QuestionCircleOutlined,
-} from "@ant-design/icons";
+import { AudioOutlined, LoadingOutlined } from '@ant-design/icons';
+
+import revElaLogo from './assets/logo-revela.png';
+import useDeviceMediaQuery from './hooks/useDeviceMediaQuery';
 
 const { Header, Content, Footer } = Layout;
 const { Paragraph, Title } = Typography;
@@ -54,11 +50,18 @@ function App() {
 
   const [step, setStep] = useState(0);
   const nextStep = () => {
-    if (step === 2) return;
+    if (step === 2) {
+      return;
+    }
+
     setStep(step + 1);
   };
+
   const prevStep = () => {
-    if (step === 0) return;
+    if (step === 0) {
+      return;
+    }
+
     setStep(step - 1);
   };
 
@@ -68,7 +71,7 @@ function App() {
     if (recording & (progress < 100)) {
       setTimeout(() => setProgress(progress + 100 / 30), 1000);
     }
-  }, [progress]);
+  }, [progress, recording]);
 
   const onFinish = (values) => {
     setDados(values);
@@ -84,19 +87,22 @@ function App() {
     setProgress(1);
 
     switch (protocol) {
-      case "pa":
+      case 'pa':
         setPaRecord(true);
         break;
-      case "ta":
+      case 'ta':
         setTaRecord(true);
         break;
 
-      case "ka":
+      case 'ka':
         setKaRecord(true);
         break;
 
-      case "pataka":
+      case 'pataka':
         setPatakaRecord(true);
+        break;
+
+      default:
         break;
     }
 
@@ -104,15 +110,16 @@ function App() {
     navigator.mediaDevices.getUserMedia({ audio: true }).then(
       (stream) => {
         mediaRecorder = new MediaRecorder(stream);
-        let chunks = [];
+        const chunks = [];
         mediaRecorder.ondataavailable = (data) => {
           chunks.push(data.data);
         };
+
         mediaRecorder.onstop = () => {
           const fileNameWav = `audio-${protocol}-${dados.class}-${dados.age}-${dados.gender}.wav`;
           const fileUrlWav = URL.createObjectURL(new Blob(chunks));
 
-          const blob = new Blob(chunks, { type: "audio/ogg; code=opus" });
+          const blob = new Blob(chunks, { type: 'audio/ogg; code=opus' });
           const reader = new FileReader();
 
           if (reader.readAsDataURL) {
@@ -126,20 +133,20 @@ function App() {
               `audio-${protocol}`
             );
 
-            const audio = document.createElement("audio");
+            const audio = document.createElement('audio');
             audio.src = reader.result;
             audio.controls = true;
 
-            const div = document.createElement("div");
-            const link = document.createElement("a");
+            const div = document.createElement('div');
+            const link = document.createElement('a');
             link.href = fileUrlWav;
             link.download = fileNameWav;
-            link.text = "Download";
+            link.text = 'Download';
 
-            const removeRecording = document.createElement("a");
-            removeRecording.text = " | Remover";
+            const removeRecording = document.createElement('a');
+            removeRecording.text = ' | Remover';
             removeRecording.addEventListener(
-              "click",
+              'click',
               () => {
                 audio.remove();
                 div.remove();
@@ -160,6 +167,7 @@ function App() {
             setRecording(false);
           };
         };
+
         mediaRecorder.start();
         setTimeout(() => mediaRecorder.stop(), 30000);
       },
@@ -169,27 +177,24 @@ function App() {
     );
   };
 
-  useEffect(() => {});
-
   const helpProtocolComponent = (protocol) => (
-    <span>Protocolo {protocol.toUpperCase()}&nbsp;</span>
+    <span>
+      Protocolo {protocol.toUpperCase()}
+      &nbsp;
+    </span>
   );
+
+  const stepsDirection = useDeviceMediaQuery().isTabletOrMobile
+    ? 'vertical'
+    : 'horizontal';
 
   return (
     <Layout>
-      <Header style={{ position: "fixed", zIndex: 1, width: "100%" }}>
-        <div className="logo" />
-        {/* <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
-          <Menu.Item key="1">Inicio</Menu.Item>
-          <Menu.Item key="2">Sobre o projeto</Menu.Item>
-          <Menu.Item key="3">Login</Menu.Item>
-        </Menu> */}
+      <Header className="header">
+        <img alt="revEla Logo" src={revElaLogo} className="revElaLogo" />
       </Header>
-      <Content
-        className="site-layout"
-        style={{ padding: "0 50px", marginTop: 64 }}
-      >
-        <Breadcrumb style={{ margin: "16px 0" }} />
+      <Content className="site-layout">
+        <Breadcrumb style={{ margin: '16px 0' }} />
         <div
           className="site-layout-background"
           style={{ padding: 24, minHeight: 380 }}
@@ -204,7 +209,7 @@ function App() {
 
           <Row>
             <Col xs={{ span: 22, offset: 2 }} lg={{ span: 6, offset: 9 }}>
-              <Steps size="default" current={step}>
+              <Steps direction={stepsDirection} size="default" current={step}>
                 <Step
                   title="Identificação"
                   description="Informar dados do voluntário"
@@ -257,7 +262,7 @@ function App() {
                 </Radio.Group>
               </Form.Item>
 
-              <Form.Item {...tailLayout}>
+              <Form.Item>
                 <Button type="primary" htmlType="submit">
                   Próximo
                 </Button>
@@ -287,7 +292,7 @@ function App() {
                           <br /> Sugerimos também que utilize um microfone
                           externo (fone de ouvido) para realizar uma gravação
                           melhor do áudio.
-                        </Paragraph>{" "}
+                        </Paragraph>{' '}
                       </>
                     }
                     type="info"
@@ -297,12 +302,12 @@ function App() {
 
               <Form.Item
                 name="protocolPA"
-                label={helpProtocolComponent("pa")}
+                label={helpProtocolComponent('pa')}
                 rules={[{ required: true }]}
               >
                 <Paragraph>Exemplo: PA PA PA PA PA...</Paragraph>
                 <Button
-                  onClick={() => onRecorderAudio("pa")}
+                  onClick={() => onRecorderAudio('pa')}
                   disabled={recording}
                 >
                   {paRecord & recording ? (
@@ -317,17 +322,17 @@ function App() {
                 ) : (
                   <></>
                 )}
-                <div {...layout} id="audio-pa"></div>
+                <div {...layout} id="audio-pa" />
               </Form.Item>
 
               <Form.Item
                 name="protocolTA"
-                label={helpProtocolComponent("ta")}
+                label={helpProtocolComponent('ta')}
                 rules={[{ required: true }]}
               >
                 <Paragraph>Exemplo: TA TA TA TA TA...</Paragraph>
                 <Button
-                  onClick={() => onRecorderAudio("ta")}
+                  onClick={() => onRecorderAudio('ta')}
                   disabled={recording}
                 >
                   {taRecord & recording ? (
@@ -342,17 +347,17 @@ function App() {
                 ) : (
                   <></>
                 )}
-                <div {...layout} id="audio-ta"></div>
+                <div {...layout} id="audio-ta" />
               </Form.Item>
 
               <Form.Item
                 name="protocolKA"
-                label={helpProtocolComponent("ka")}
+                label={helpProtocolComponent('ka')}
                 rules={[{ required: true }]}
               >
                 <Paragraph>Exemplo: KA KA KA KA KA...</Paragraph>
                 <Button
-                  onClick={() => onRecorderAudio("ka")}
+                  onClick={() => onRecorderAudio('ka')}
                   disabled={recording}
                 >
                   {kaRecord & recording ? (
@@ -367,17 +372,17 @@ function App() {
                 ) : (
                   <></>
                 )}
-                <div {...layout} id="audio-ka"></div>
+                <div {...layout} id="audio-ka" />
               </Form.Item>
 
               <Form.Item
                 name="protocolPATAKA"
-                label={helpProtocolComponent("pataka")}
+                label={helpProtocolComponent('pataka')}
                 rules={[{ required: true }]}
               >
                 <Paragraph>Exemplo: PATAKA PATAKA PATAKA...</Paragraph>
                 <Button
-                  onClick={() => onRecorderAudio("pataka")}
+                  onClick={() => onRecorderAudio('pataka')}
                   disabled={recording}
                 >
                   {patakaRecord & recording ? (
@@ -392,7 +397,7 @@ function App() {
                 ) : (
                   <></>
                 )}
-                <div {...layout} id="audio-pataka"></div>
+                <div {...layout} id="audio-pataka" />
               </Form.Item>
               <Row>
                 <Col xs={{ span: 22, offset: 2 }} lg={{ span: 10, offset: 7 }}>
@@ -404,7 +409,7 @@ function App() {
                           Ao finalizar a gravação dos 4 protocolos, realize o
                           download deles e envie para o seguinte email:
                           john.victor@lais.huol.ufrn.br
-                        </Paragraph>{" "}
+                        </Paragraph>{' '}
                       </>
                     }
                     type="info"
@@ -422,7 +427,7 @@ function App() {
           )}
         </div>
       </Content>
-      <Footer style={{ textAlign: "center" }}>
+      <Footer style={{ textAlign: 'center' }}>
         Projeto biomarcadores na fala ©2020 desenvolvido pelo LAIS
       </Footer>
     </Layout>
